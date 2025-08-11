@@ -55,4 +55,62 @@ describe('HttpService', () => {
     });
     expect(response.data).toBe('response data');
   });
+
+  it('should configure axios with 5 second timeout', () => {
+    expect(mockedAxios.create).toHaveBeenCalledWith({
+      timeout: 5000,
+    });
+  });
+
+  it('should retry GET request once on failure then succeed', async () => {
+    // First call fails, second succeeds
+    mockedAxios.get
+      .mockRejectedValueOnce(new Error('Network error'))
+      .mockResolvedValueOnce({ data: 'success on retry' });
+
+    const endpoint = 'http://example.com/data';
+    const response = await httpService.get({ endpoint });
+
+    expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    expect(response.data).toBe('success on retry');
+  });
+
+  it('should retry POST request once on failure then succeed', async () => {
+    // First call fails, second succeeds
+    mockedAxios.post
+      .mockRejectedValueOnce(new Error('Network error'))
+      .mockResolvedValueOnce({ data: 'success on retry' });
+
+    const endpoint = 'http://example.com/submit';
+    const body = { test: true };
+    const response = await httpService.post({ endpoint, body });
+
+    expect(mockedAxios.post).toHaveBeenCalledTimes(2);
+    expect(response.data).toBe('success on retry');
+  });
+
+  it('should fail after one retry attempt for GET requests', async () => {
+    const error = new Error('Network error');
+    mockedAxios.get.mockRejectedValue(error);
+
+    const endpoint = 'http://example.com/data';
+
+    await expect(httpService.get({ endpoint })).rejects.toThrow(
+      'Network error',
+    );
+    expect(mockedAxios.get).toHaveBeenCalledTimes(2); // Initial call + 1 retry
+  });
+
+  it('should fail after one retry attempt for POST requests', async () => {
+    const error = new Error('Network error');
+    mockedAxios.post.mockRejectedValue(error);
+
+    const endpoint = 'http://example.com/submit';
+    const body = { test: true };
+
+    await expect(httpService.post({ endpoint, body })).rejects.toThrow(
+      'Network error',
+    );
+    expect(mockedAxios.post).toHaveBeenCalledTimes(2); // Initial call + 1 retry
+  });
 });

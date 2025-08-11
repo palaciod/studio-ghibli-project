@@ -31,9 +31,17 @@ export type Scalars = {
   Date: { input: any; output: any };
 };
 
-export type HelloWorld = {
-  __typename?: 'HelloWorld';
-  message?: Maybe<Scalars['String']['output']>;
+export type Film = {
+  __typename?: 'Film';
+  description: Scalars['String']['output'];
+  director: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  image?: Maybe<Scalars['String']['output']>;
+  movieBanner?: Maybe<Scalars['String']['output']>;
+  releaseDate: Scalars['String']['output'];
+  rtScore: Scalars['Int']['output'];
+  runningTime: Scalars['Int']['output'];
+  title: Scalars['String']['output'];
 };
 
 export type Mutation = {
@@ -43,34 +51,128 @@ export type Mutation = {
 
 export type Query = {
   __typename?: 'Query';
-  helloWorld: HelloWorld;
+  allFilms: Array<Film>;
+  film?: Maybe<Film>;
+  films: Array<Film>;
+  filmsExcept: Array<Film>;
   placeholder?: Maybe<Scalars['String']['output']>;
 };
 
-export type GetHelloWorldQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetHelloWorldQuery = {
-  __typename?: 'Query';
-  helloWorld: { __typename?: 'HelloWorld'; message?: string | null };
+export type QueryFilmArgs = {
+  id: Scalars['ID']['input'];
 };
 
-export const GetHelloWorldDocument = {
+export type QueryFilmsArgs = {
+  ids: Array<Scalars['ID']['input']>;
+};
+
+export type QueryFilmsExceptArgs = {
+  ids: Array<Scalars['ID']['input']>;
+};
+
+export type GetAllFilmsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetAllFilmsQuery = {
+  __typename?: 'Query';
+  allFilms: Array<{
+    __typename?: 'Film';
+    id: string;
+    title: string;
+    description: string;
+    director: string;
+    releaseDate: string;
+    runningTime: number;
+    rtScore: number;
+    image?: string | null;
+    movieBanner?: string | null;
+  }>;
+};
+
+export type GetFilmByIdQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+export type GetFilmByIdQuery = {
+  __typename?: 'Query';
+  film?: {
+    __typename?: 'Film';
+    id: string;
+    title: string;
+    description: string;
+    director: string;
+    releaseDate: string;
+    runningTime: number;
+    rtScore: number;
+    image?: string | null;
+    movieBanner?: string | null;
+  } | null;
+};
+
+export type GetFilmsByIdsQueryVariables = Exact<{
+  ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+}>;
+
+export type GetFilmsByIdsQuery = {
+  __typename?: 'Query';
+  films: Array<{
+    __typename?: 'Film';
+    id: string;
+    title: string;
+    description: string;
+    director: string;
+    releaseDate: string;
+    runningTime: number;
+    rtScore: number;
+    image?: string | null;
+    movieBanner?: string | null;
+  }>;
+};
+
+export type GetFilmsExceptQueryVariables = Exact<{
+  ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+}>;
+
+export type GetFilmsExceptQuery = {
+  __typename?: 'Query';
+  filmsExcept: Array<{
+    __typename?: 'Film';
+    id: string;
+    title: string;
+    description: string;
+    director: string;
+    releaseDate: string;
+    runningTime: number;
+    rtScore: number;
+    image?: string | null;
+    movieBanner?: string | null;
+  }>;
+};
+
+export const GetAllFilmsDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'GetHelloWorld' },
+      name: { kind: 'Name', value: 'GetAllFilms' },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'helloWorld' },
+            name: { kind: 'Name', value: 'allFilms' },
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'message' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'director' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'releaseDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'runningTime' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'rtScore' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'movieBanner' } },
               ],
             },
           },
@@ -78,4 +180,181 @@ export const GetHelloWorldDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<GetHelloWorldQuery, GetHelloWorldQueryVariables>;
+} as unknown as DocumentNode<GetAllFilmsQuery, GetAllFilmsQueryVariables>;
+export const GetFilmByIdDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetFilmById' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'film' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'director' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'releaseDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'runningTime' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'rtScore' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'movieBanner' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetFilmByIdQuery, GetFilmByIdQueryVariables>;
+export const GetFilmsByIdsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetFilmsByIds' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'ids' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'ID' },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'films' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'ids' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'ids' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'director' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'releaseDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'runningTime' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'rtScore' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'movieBanner' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetFilmsByIdsQuery, GetFilmsByIdsQueryVariables>;
+export const GetFilmsExceptDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetFilmsExcept' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'ids' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'ID' },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'filmsExcept' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'ids' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'ids' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'director' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'releaseDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'runningTime' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'rtScore' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'movieBanner' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetFilmsExceptQuery, GetFilmsExceptQueryVariables>;

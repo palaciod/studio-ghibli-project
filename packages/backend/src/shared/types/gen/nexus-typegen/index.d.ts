@@ -44,8 +44,16 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
-  HelloWorld: { // root type
-    message?: string | null; // String
+  Film: { // root type
+    description: string; // String!
+    director: string; // String!
+    id: string; // ID!
+    image?: string | null; // String
+    movieBanner?: string | null; // String
+    releaseDate: string; // String!
+    rtScore: number; // Int!
+    runningTime: number; // Int!
+    title: string; // String!
   }
   Mutation: {};
   Query: {};
@@ -62,32 +70,65 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
-  HelloWorld: { // field return type
-    message: string | null; // String
+  Film: { // field return type
+    description: string; // String!
+    director: string; // String!
+    id: string; // ID!
+    image: string | null; // String
+    movieBanner: string | null; // String
+    releaseDate: string; // String!
+    rtScore: number; // Int!
+    runningTime: number; // Int!
+    title: string; // String!
   }
   Mutation: { // field return type
     placeholder: string | null; // String
   }
   Query: { // field return type
-    helloWorld: NexusGenRootTypes['HelloWorld']; // HelloWorld!
+    allFilms: NexusGenRootTypes['Film'][]; // [Film!]!
+    film: NexusGenRootTypes['Film'] | null; // Film
+    films: NexusGenRootTypes['Film'][]; // [Film!]!
+    filmsExcept: NexusGenRootTypes['Film'][]; // [Film!]!
     placeholder: string | null; // String
   }
 }
 
 export interface NexusGenFieldTypeNames {
-  HelloWorld: { // field return type name
-    message: 'String'
+  Film: { // field return type name
+    description: 'String'
+    director: 'String'
+    id: 'ID'
+    image: 'String'
+    movieBanner: 'String'
+    releaseDate: 'String'
+    rtScore: 'Int'
+    runningTime: 'Int'
+    title: 'String'
   }
   Mutation: { // field return type name
     placeholder: 'String'
   }
   Query: { // field return type name
-    helloWorld: 'HelloWorld'
+    allFilms: 'Film'
+    film: 'Film'
+    films: 'Film'
+    filmsExcept: 'Film'
     placeholder: 'String'
   }
 }
 
 export interface NexusGenArgTypes {
+  Query: {
+    film: { // args
+      id: string; // ID!
+    }
+    films: { // args
+      ids: string[]; // [ID!]!
+    }
+    filmsExcept: { // args
+      ids: string[]; // [ID!]!
+    }
+  }
 }
 
 export interface NexusGenAbstractTypeMembers {
