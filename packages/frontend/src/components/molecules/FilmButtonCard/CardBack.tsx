@@ -1,6 +1,14 @@
 import React from 'react';
 import { Box, Typography, Chip, Stack } from '@mui/material';
 import { Film } from '~/shared/types';
+import {
+  textShadows,
+  absolutePositioning,
+  backgroundStyles,
+  gradients,
+  typographySizes,
+  transitions,
+} from '~/shared/styles/utilities';
 
 export interface CardBackProps {
   film: Film;
@@ -10,18 +18,14 @@ export const CardBack: React.FC<CardBackProps> = ({ film }) => {
   return (
     <Box
       sx={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        ...absolutePositioning.fullCover,
         backfaceVisibility: 'hidden',
         transform: 'rotateY(180deg)',
-        transition: 'transform 0.6s ease-in-out',
+        transition: transitions.cardFlip,
         display: 'flex',
         flexDirection: 'column',
         padding: 2,
-        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+        backgroundColor: gradients.darkBackground,
         borderRadius: 1,
         overflow: 'hidden',
         color: 'white',
@@ -31,14 +35,9 @@ export const CardBack: React.FC<CardBackProps> = ({ film }) => {
       {film.image && (
         <Box
           sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
+            ...absolutePositioning.fullCover,
             backgroundImage: `url(${film.image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            ...backgroundStyles.cover,
             opacity: 0.2,
             zIndex: 0,
           }}
@@ -61,10 +60,10 @@ export const CardBack: React.FC<CardBackProps> = ({ film }) => {
           component="h3"
           sx={{
             fontWeight: 700,
-            fontSize: '1.1rem',
+            fontSize: typographySizes.titlePrimary,
             marginBottom: 1,
             textAlign: 'center',
-            textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+            textShadow: textShadows.primary,
             lineHeight: 1.2,
           }}
         >
@@ -75,14 +74,14 @@ export const CardBack: React.FC<CardBackProps> = ({ film }) => {
         <Typography
           variant="body2"
           sx={{
-            fontSize: '0.75rem',
+            fontSize: typographySizes.bodySmall,
             lineHeight: 1.3,
             marginBottom: 1.5,
             overflow: 'hidden',
             display: '-webkit-box',
             WebkitLineClamp: 4,
             WebkitBoxOrient: 'vertical',
-            textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+            textShadow: textShadows.light,
           }}
         >
           {film.description}
@@ -93,9 +92,9 @@ export const CardBack: React.FC<CardBackProps> = ({ film }) => {
           <Typography
             variant="caption"
             sx={{
-              fontSize: '0.7rem',
+              fontSize: typographySizes.captionLarge,
               fontWeight: 600,
-              textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+              textShadow: textShadows.light,
             }}
           >
             Director: {film.director}
@@ -111,8 +110,8 @@ export const CardBack: React.FC<CardBackProps> = ({ film }) => {
             <Typography
               variant="caption"
               sx={{
-                fontSize: '0.65rem',
-                textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+                fontSize: typographySizes.captionSmall,
+                textShadow: textShadows.light,
               }}
             >
               {film.releaseDate}
@@ -121,8 +120,8 @@ export const CardBack: React.FC<CardBackProps> = ({ film }) => {
             <Typography
               variant="caption"
               sx={{
-                fontSize: '0.65rem',
-                textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+                fontSize: typographySizes.captionSmall,
+                textShadow: textShadows.light,
               }}
             >
               {film.runningTime} min
@@ -137,9 +136,9 @@ export const CardBack: React.FC<CardBackProps> = ({ film }) => {
               label={`${film.rtScore}% RT`}
               size="small"
               sx={{
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                backgroundColor: gradients.lightOverlay,
                 color: 'white',
-                fontSize: '0.65rem',
+                fontSize: typographySizes.captionSmall,
                 height: '20px',
                 fontWeight: 600,
                 backdropFilter: 'blur(4px)',

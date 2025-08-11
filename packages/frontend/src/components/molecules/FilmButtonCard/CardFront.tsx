@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { FilmTitle } from '~/components/atoms/FilmTitle/FilmTitle';
+import {
+  absolutePositioning,
+  backgroundStyles,
+  gradients,
+  transitions,
+  typographySizes,
+} from '~/shared/styles/utilities';
 
 export interface CardFrontProps {
   title: string;
@@ -26,35 +33,24 @@ export const CardFront: React.FC<CardFrontProps> = ({
   return (
     <Box
       sx={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        ...absolutePositioning.fullCover,
         backfaceVisibility: 'hidden',
         transform: 'rotateY(0deg)',
-        transition: 'transform 0.6s ease-in-out',
+        transition: transitions.cardFlip,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         padding: 2,
         backgroundImage: showBackgroundImage ? `url(${posterUrl})` : 'none',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
+        ...backgroundStyles.cover,
         borderRadius: 1,
         overflow: 'hidden',
         '&::before': showBackgroundImage
           ? {
               content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background:
-                'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%)',
+              ...absolutePositioning.fullCover,
+              background: gradients.posterOverlay,
               zIndex: 1,
             }
           : {},
@@ -81,11 +77,11 @@ export const CardFront: React.FC<CardFrontProps> = ({
             position: 'absolute',
             bottom: 8,
             right: 8,
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            backgroundColor: gradients.lightOverlay,
             color: 'rgba(255, 255, 255, 0.7)',
             padding: '2px 6px',
             borderRadius: 1,
-            fontSize: '0.7rem',
+            fontSize: typographySizes.captionLarge,
             zIndex: 2,
           }}
         >
