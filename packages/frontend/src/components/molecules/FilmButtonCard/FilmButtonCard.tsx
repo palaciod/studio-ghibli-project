@@ -197,7 +197,7 @@ export const FilmButtonCardWithFilm: React.FC<FilmButtonCardWithFilmProps> = ({
     <FilmButtonCard
       title={film.title}
       color={color}
-      posterUrl={film.poster_url || film.image}
+      posterUrl={film.image}
       state={state}
       onClick={handleFilmClick}
       disabled={disabled}

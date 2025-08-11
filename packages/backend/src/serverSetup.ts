@@ -47,14 +47,18 @@ export function createExpressApp() {
 }
 
 export function createApolloServer(httpServer: http.Server) {
+  const isProduction = NODE_ENV === 'production';
+  const isTest = NODE_ENV === 'test';
+
   const server = new ApolloServer({
     schema,
-    introspection: NODE_ENV !== 'production',
-    ...(NODE_ENV !== 'test' ? { logger: logger } : {}), // Only add logger if not in test
+    introspection: !isProduction,
+    csrfPrevention: isProduction,
+    ...(!isTest && { logger: logger }),
     plugins: [
       // sentryPlugin,
       ApolloServerPluginDrainHttpServer({ httpServer }),
-      ...(NODE_ENV !== 'test' ? [pinoLogger] : []), // Only add pinoLogger if not in test
+      ...(!isTest ? [pinoLogger] : []),
     ],
   });
 

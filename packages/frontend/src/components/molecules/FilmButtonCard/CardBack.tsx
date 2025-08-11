@@ -115,7 +115,7 @@ export const CardBack: React.FC<CardBackProps> = ({ film }) => {
                 textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
               }}
             >
-              {film.release_date}
+              {film.releaseDate}
             </Typography>
 
             <Typography
@@ -125,7 +125,7 @@ export const CardBack: React.FC<CardBackProps> = ({ film }) => {
                 textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
               }}
             >
-              {film.running_time} min
+              {film.runningTime} min
             </Typography>
           </Box>
 
@@ -134,7 +134,7 @@ export const CardBack: React.FC<CardBackProps> = ({ film }) => {
             sx={{ display: 'flex', justifyContent: 'center', marginTop: 0.5 }}
           >
             <Chip
-              label={`${film.rt_score}% RT`}
+              label={`${film.rtScore}% RT`}
               size="small"
               sx={{
                 backgroundColor: 'rgba(255, 255, 255, 0.2)',

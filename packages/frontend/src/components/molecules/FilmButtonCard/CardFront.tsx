@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { FilmTitle } from '~/components/atoms/FilmTitle/FilmTitle';
-import { BackgroundImage } from '~/components/atoms/BackgroundImage/BackgroundImage';
-import { absolutePositioning } from '~/shared/styles/utilities';
 
 export interface CardFrontProps {
   title: string;

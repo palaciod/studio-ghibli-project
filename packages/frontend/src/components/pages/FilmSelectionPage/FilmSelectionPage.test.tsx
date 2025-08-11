@@ -4,6 +4,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ThemeProvider } from '@mui/material';
 import { theme } from '~/shared/styles/theme';
 
+// Mock the GraphQL hooks
+vi.mock('~/graphql/hooks', () => ({
+  useAllFilms: vi.fn(),
+  useFilmsByIds: vi.fn(),
+  useFilmById: vi.fn(),
+  useFilmsExcept: vi.fn(),
+}));
+
 // Mock the FilmButtonsContainer
 vi.mock(
   '~/components/organisms/FilmButtonsContainer/FilmButtonsContainer',
@@ -15,9 +23,12 @@ vi.mock(
 // Import after mocking
 import { FilmSelectionPage } from './FilmSelectionPage';
 import { FilmButtonsContainer } from '~/components/organisms/FilmButtonsContainer/FilmButtonsContainer';
+import { useAllFilms, useFilmsByIds } from '~/graphql/hooks';
 
 // Get mocked functions
 const mockFilmButtonsContainer = vi.mocked(FilmButtonsContainer);
+const mockUseAllFilms = vi.mocked(useAllFilms);
+const mockUseFilmsByIds = vi.mocked(useFilmsByIds);
 
 const renderWithTheme = (component: React.ReactElement) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
@@ -26,6 +37,46 @@ const renderWithTheme = (component: React.ReactElement) => {
 describe('FilmSelectionPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Mock default films data for useFilmsByIds
+    const mockDefaultFilms = [
+      {
+        id: 'ebbb6b7c-945c-41ee-a792-de0e43191bd8',
+        title: 'Porco Rosso',
+        description:
+          'A World War I pilot is cursed to look like an anthropomorphic pig.',
+        director: 'Hayao Miyazaki',
+        releaseDate: '1992',
+        runningTime: 94,
+        rtScore: 94,
+      },
+      {
+        id: 'ea660b10-85c4-4ae3-8a5f-41cea3648e3e',
+        title: "Kiki's Delivery Service",
+        description:
+          'A young witch loses her magical powers and must rediscover them.',
+        director: 'Hayao Miyazaki',
+        releaseDate: '1989',
+        runningTime: 102,
+        rtScore: 96,
+      },
+    ];
+
+    // Mock useFilmsByIds hook (used for default films)
+    mockUseFilmsByIds.mockReturnValue({
+      data: { films: mockDefaultFilms },
+      loading: false,
+      error: null,
+      refetch: vi.fn(),
+    } as any);
+
+    // Mock the useAllFilms hook
+    mockUseAllFilms.mockReturnValue({
+      data: { allFilms: mockDefaultFilms },
+      loading: false,
+      error: null,
+      refetch: vi.fn(),
+    } as any);
 
     // Set up default mock implementation
     mockFilmButtonsContainer.mockImplementation(
@@ -40,19 +91,11 @@ describe('FilmSelectionPage', () => {
                 onFilmClick?.({
                   id: 'test-film',
                   title: 'Test Film',
-                  original_title: 'Test Film Original',
-                  original_title_romanised: 'Test Film Romanised',
                   description: 'A test film',
                   director: 'Test Director',
-                  producer: 'Test Producer',
-                  release_date: '2023',
-                  running_time: '120',
-                  rt_score: '95',
-                  people: [],
-                  species: [],
-                  locations: [],
-                  vehicles: [],
-                  url: 'http://test.com',
+                  releaseDate: '2023',
+                  runningTime: 120,
+                  rtScore: 95,
                 }),
               'data-testid': 'mock-film-button',
             },
