@@ -1,8 +1,16 @@
-import React from 'react';
-import { Box, Typography, Container } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Box,
+  Typography,
+  Container,
+  CircularProgress,
+  Alert,
+  Button,
+} from '@mui/material';
 import { FilmButtonsContainer } from '~/components/organisms/FilmButtonsContainer/FilmButtonsContainer';
-import { MOCK_FILMS } from '~/shared/constants/mocks/filmData';
+import { useAllFilms, useFilmsByIds } from '~/graphql/hooks';
 import { BUTTON_COLORS_ARRAY } from '~/shared/constants/colors';
+import { DEFAULT_FILM_IDS } from '~/shared/constants/films';
 import { Film } from '~/shared/types';
 
 export interface FilmSelectionPageProps {
@@ -10,42 +18,40 @@ export interface FilmSelectionPageProps {
 }
 
 /**
- * Simulates fetching film data with a delay and occasional failures
+ * Handles film selection with real GraphQL data
  */
-const simulateFilmFetch = async (filmId: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    // Simulate network delay (1-3 seconds)
-    const delay = Math.random() * 2000 + 1000;
-
-    setTimeout(() => {
-      // 70% success rate
-      const success = Math.random() > 0.3;
-
-      if (success) {
-        resolve();
-      } else {
-        reject(new Error(`Failed to fetch film data for ${filmId}`));
-      }
-    }, delay);
-  });
+const handleFilmClick = async (film: Film): Promise<void> => {
+  try {
+    // For now, just log the selection - replace with actual selection logic
+    console.log(`Successfully selected film: ${film.title}`);
+  } catch (err) {
+    console.error(`Failed to select film: ${film.title}`, err);
+    throw err; // Re-throw so FilmButtonsContainer can handle retry logic
+  }
 };
 
 /**
  * Main page component for film selection interface
- * Integrates FilmButtonsContainer with data fetching logic and overall layout
+ * Integrates FilmButtonsContainer with GraphQL data fetching and overall layout
  */
 export const FilmSelectionPage: React.FC<FilmSelectionPageProps> = ({
   'data-testid': dataTestId = 'film-selection-page',
 }) => {
-  const handleFilmClick = async (film: Film): Promise<void> => {
-    try {
-      await simulateFilmFetch(film.id);
-      console.log(`Successfully selected film: ${film.title}`);
-    } catch (err) {
-      console.error(`Failed to select film: ${film.title}`, err);
-      throw err; // Re-throw so FilmButtonsContainer can handle retry logic
-    }
-  };
+  // State to track whether to show all films or just the default 4
+  const [showAllFilms, setShowAllFilms] = useState(false);
+
+  // Conditionally fetch either default films or all films
+  const defaultFilmsQuery = useFilmsByIds([...DEFAULT_FILM_IDS]);
+  const allFilmsQuery = useAllFilms();
+
+  // Use the appropriate query based on state
+  const currentQuery = showAllFilms ? allFilmsQuery : defaultFilmsQuery;
+  const { loading, error, refetch } = currentQuery;
+
+  // Extract films from the query result with proper typing
+  const films = showAllFilms
+    ? allFilmsQuery.data?.allFilms
+    : defaultFilmsQuery.data?.films;
 
   const pageStyles = {
     minHeight: '100vh',
@@ -89,12 +95,83 @@ export const FilmSelectionPage: React.FC<FilmSelectionPageProps> = ({
           Choose your favorite Studio Ghibli film from the collection below
         </Typography>
 
-        <FilmButtonsContainer
-          films={MOCK_FILMS}
-          colors={[...BUTTON_COLORS_ARRAY]}
-          onFilmClick={handleFilmClick}
-          data-testid={`${dataTestId}-buttons-container`}
-        />
+        {/* Loading State */}
+        {loading && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+            <CircularProgress size={60} />
+            <Typography sx={{ ml: 2, alignSelf: 'center' }}>
+              Loading Studio Ghibli films...
+            </Typography>
+          </Box>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <Alert
+            severity="error"
+            sx={{ mb: 4 }}
+            action={<button onClick={() => refetch()}>Retry</button>}
+          >
+            Failed to load films: {error.message}
+          </Alert>
+        )}
+
+        {/* Toggle Button */}
+        {!loading && !error && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+            <Button
+              variant={showAllFilms ? 'outlined' : 'contained'}
+              onClick={() => setShowAllFilms(!showAllFilms)}
+              size="large"
+              sx={{
+                minWidth: 200,
+                fontSize: '1.1rem',
+                py: 1.5,
+              }}
+              data-testid={`${dataTestId}-toggle-button`}
+            >
+              {showAllFilms ? 'Show Default Films' : 'Show All Films'}
+            </Button>
+          </Box>
+        )}
+
+        {/* Films Display */}
+        {films && films.length > 0 && (
+          <>
+            <Typography
+              variant="h6"
+              sx={{ textAlign: 'center', mb: 2, color: '#555' }}
+              data-testid={`${dataTestId}-films-count`}
+            >
+              {showAllFilms
+                ? `Showing all ${films.length} Studio Ghibli films`
+                : `Showing ${films.length} featured films`}
+            </Typography>
+            <FilmButtonsContainer
+              films={films.map((film: any) => ({
+                id: film.id,
+                title: film.title,
+                description: film.description,
+                director: film.director,
+                releaseDate: film.releaseDate,
+                runningTime: film.runningTime,
+                rtScore: film.rtScore,
+                image: film.image || undefined,
+                movieBanner: film.movieBanner || undefined,
+              }))}
+              colors={[...BUTTON_COLORS_ARRAY]}
+              onFilmClick={handleFilmClick}
+              data-testid={`${dataTestId}-buttons-container`}
+            />
+          </>
+        )}
+
+        {/* No Films State */}
+        {!loading && !error && films && films.length === 0 && (
+          <Typography sx={{ textAlign: 'center', color: '#666' }}>
+            No films available at the moment.
+          </Typography>
+        )}
       </Container>
     </Box>
   );

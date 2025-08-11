@@ -116,7 +116,7 @@ export const FilmButtonsContainer: React.FC<FilmButtonsContainerProps> = ({
               key={film.id}
               title={film.title}
               color={color}
-              posterUrl={film.poster_url || film.image}
+              posterUrl={film.image}
               state={state}
               disabled={isDisabled}
               onClick={() => handleFilmClick(film, index)}

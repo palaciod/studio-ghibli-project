@@ -5,8 +5,16 @@
 """Date custom scalar type"""
 scalar Date
 
-type HelloWorld {
-  message: String
+type Film {
+  description: String!
+  director: String!
+  id: ID!
+  image: String
+  movieBanner: String
+  releaseDate: String!
+  rtScore: Int!
+  runningTime: Int!
+  title: String!
 }
 
 type Mutation {
@@ -14,6 +22,9 @@ type Mutation {
 }
 
 type Query {
-  helloWorld: HelloWorld!
+  allFilms: [Film!]!
+  film(id: ID!): Film
+  films(ids: [ID!]!): [Film!]!
+  filmsExcept(ids: [ID!]!): [Film!]!
   placeholder: String
 }

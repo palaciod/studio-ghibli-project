@@ -1,20 +1,11 @@
 export interface Film {
   id: string;
   title: string;
-  original_title: string;
-  original_title_romanised: string;
   description: string;
   director: string;
-  producer: string;
-  release_date: string;
-  running_time: string;
-  rt_score: string;
-  people: string[];
-  species: string[];
-  locations: string[];
-  vehicles: string[];
-  url: string;
-  // Additional properties for our button implementation
+  releaseDate: string; // camelCase to match GraphQL
+  runningTime: number; // camelCase, number to match GraphQL
+  rtScore: number; // camelCase, number to match GraphQL
   image?: string;
-  poster_url?: string;
+  movieBanner?: string; // Added to match GraphQL schema
 }

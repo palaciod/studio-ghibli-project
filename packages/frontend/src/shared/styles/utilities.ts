@@ -5,11 +5,19 @@ export const textShadows = {
   light: '1px 1px 2px rgba(0,0,0,0.8)',
 } as const;
 
+export const typographySizes = {
+  titlePrimary: '1.1rem',
+  bodySmall: '0.75rem',
+  captionLarge: '0.7rem',
+  captionSmall: '0.65rem',
+} as const;
+
 export const gradients = {
   posterOverlay:
     'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%)',
   darkBackground: 'rgba(0, 0, 0, 0.9)',
   lightOverlay: 'rgba(255, 255, 255, 0.2)',
+  loadingOverlay: 'rgba(0, 0, 0, 0.3)',
 } as const;
 
 export const backgroundStyles = {
@@ -28,4 +36,8 @@ export const absolutePositioning = {
     right: 0,
     bottom: 0,
   },
+} as const;
+
+export const transitions = {
+  cardFlip: 'transform 0.6s ease-in-out',
 } as const;
